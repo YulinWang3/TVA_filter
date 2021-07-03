@@ -8,7 +8,7 @@
 
 # Requirement
 * Python
-* pyopenxl
+* openpyxl
 * pandas
 * PySimpleGUI 
 * xlsxwriter
