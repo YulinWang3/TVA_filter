@@ -5,3 +5,10 @@
 * Target file contains a list of platforms with their correct app version
 * Note: Target file cannot check a platform that does exist on Source file
 * This program will generate a result excel file with all filtered TVAs for different platforms
+
+# Requirement
+* Python
+* pyopenxl
+* pandas
+* PySimpleGUI 
+* xlsxwriter
