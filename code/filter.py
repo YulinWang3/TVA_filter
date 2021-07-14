@@ -20,7 +20,7 @@ while True:
         if bool(file_1) == False or bool(file_2) == False:break
        
         #import target and source files and input DataFrames
-        source_table = pd.read_excel (file_1)
+        source_table = pd.read_csv (file_1)
         target_table = pd.read_excel (file_2)
         source_data = pd.DataFrame(source_table)
         target_data = pd.DataFrame(target_table)
@@ -39,13 +39,13 @@ while True:
             print(columnName)
            
             #for chiclet column - allows user to check version and PI separately
-            if columnName == 'chiclet':
+            if columnName == 'chiclet-version' or columnName == 'chiclet-PI':
                 for index, row in source_data.iterrows():
-                    if str(row[columnName]).find(str(columnValue.values[0])) != -1:
+                    if str(row['chiclet']).find(str(columnValue.values[0])) != -1:
                         result_df_add = pd.DataFrame([[i+1,str(row['TVA'])]], columns=col_correct)
                         result_df_correct=result_df_correct.append(result_df_add)
                         i = i+1
-                    elif str(row[columnName]) != '0-0':
+                    elif str(row['chiclet']) != '0-0':
                         result_df_add = pd.DataFrame([[x+1,str(row['TVA'])]], columns=col_incorrect)
                         result_df_incorrect=result_df_incorrect.append(result_df_add)
                         x = x+1
@@ -56,7 +56,7 @@ while True:
                         result_df_add = pd.DataFrame([[i+1,str(row['TVA'])]], columns=col_correct)
                         result_df_correct=result_df_correct.append(result_df_add)
                         i = i+1
-                    elif row[columnName] != 0:
+                    elif row[columnName] != '0':
                         result_df_add = pd.DataFrame([[x+1,str(row['TVA'])]], columns=col_incorrect)
                         result_df_incorrect=result_df_incorrect.append(result_df_add)
                         x = x+1
