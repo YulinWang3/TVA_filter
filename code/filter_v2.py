@@ -11,6 +11,32 @@ layout = [[sg.Text('Browse your source and target files')],
           [sg.Submit('Filter Them'), sg.Cancel('Close Program')]]
 window = sg.Window('Filter', layout)
 
+#function to compare
+def compare(platform, target):
+    #for non-chiclet-PI
+    if '.' in str(platform): 
+        version_split = platform.split(".")
+        target_split = str(target).split(".")
+        length = len(version_split)
+        
+        if int(version_split[0]) > int(target_split[0]): return platform
+        elif int(version_split[0]) < int(target_split[0]): return target 
+        else: 
+            if int(version_split[1]) > int(target_split[1]): return platform
+            elif int(version_split[1]) < int(target_split[1]): return target
+            else:
+                if int(version_split[2]) > int(target_split[2]): return platform
+                elif int(version_split[2]) < int(target_split[2]): return target
+                else:
+                    if length == 3: return platform
+                    else:
+                        if int(version_split[3]) >= int(target_split[3]): return platform
+                        elif int(version_split[3]) < int(target_split[3]): return target
+    #for chiclet-PI
+    else: 
+        if int(platform) >= target: return platform
+        else: return target
+       
 #GUI window
 while True:
     event, values = window.read()
@@ -28,28 +54,25 @@ while True:
         result_df_column = pd.DataFrame(index=None)
         i = x = z = 0
 
-        #Iterate TVA column
-        for index, row in source_data.iterrows():
+        for index, row in source_data.iterrows():#iterate TVA column
             result_df_column=result_df_column.append(pd.DataFrame([row['TVA']], columns=['TVA']))
         result_df_column.to_excel(writer, sheet_name='results', startcol=z, index=False)
         result_df_column = pd.DataFrame(index=None)#clear result_df_column
         z = z + 1 #column counter
          
-        #iterate columns within target file
-        for columnName, columnValue in target_data.iteritems():
-            
-            if columnName == 'chiclet-version' or columnName == 'chiclet-PI':
-                for index, row in source_data.iterrows():
-                    if str(row['chiclet']).find(str(columnValue.values[0])) != -1:result_df_add = pd.DataFrame(['YES'], columns=[columnName]);i = i + 1
-                    elif str(row['chiclet']) == '0-0':result_df_add = pd.DataFrame([0], columns=[columnName])
-                    else:result_df_add = pd.DataFrame(['NO'], columns=[columnName]);x=x+1
-                    result_df_column=result_df_column.append(result_df_add)
-            else:
-                for index, row in source_data.iterrows():
-                    if row[columnName] == columnValue.values[0]:result_df_add = pd.DataFrame(['YES'], columns=[columnName]);i = i + 1
-                    elif str(row[columnName]) == '0':result_df_add = pd.DataFrame([0], columns=[columnName])
-                    else:result_df_add = pd.DataFrame(['NO'], columns=[columnName]);x = x + 1
-                    result_df_column=result_df_column.append(result_df_add)
+        for columnName, columnValue in target_data.iteritems():#iterate columns within target file
+        
+            for index, row in source_data.iterrows():#iterate rows within source fule
+                if "-" in columnName:#if columnName == 'chiclet-version' or columnName == 'chiclet-PI', also split 0-0 to 0 only
+                    split = row['chiclet'].split("-")
+                    if columnName == 'chiclet-version': row[columnName] = split[0]; 
+                    else: row[columnName] = split[1]
+
+                if str(row[columnName]) == '0':result_df_add = pd.DataFrame([0], columns=[columnName])
+                elif compare(row[columnName], columnValue.values[0]) == row[columnName]:result_df_add = pd.DataFrame(['YES'], columns=[columnName]);i=i+1
+                else:result_df_add = pd.DataFrame(['NO'], columns=[columnName]);x=x+1
+                result_df_column=result_df_column.append(result_df_add)
+
             #add correct/incorrect/total/correct percentage to the end of each column
             result_df_column=result_df_column.append(pd.DataFrame(['Total = ', i+x], columns=[columnName]))
             result_df_column=result_df_column.append(pd.DataFrame(['Correct = ', i], columns=[columnName]))
@@ -66,6 +89,8 @@ while True:
         result_df_column.to_excel(writer, sheet_name='results', startcol=z, index=False)
 
         writer.close()#close excel writer
-
         print('Successfully output results')
+
 window.close()#close GUI window
+
+
