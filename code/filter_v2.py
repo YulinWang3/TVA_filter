@@ -68,9 +68,9 @@ while True:
                     if columnName == 'chiclet-version': row[columnName] = split[0]; 
                     else: row[columnName] = split[1]
 
-                if str(row[columnName]) == '0':result_df_add = pd.DataFrame([0], columns=[columnName])
-                elif compare(row[columnName], columnValue.values[0]) == row[columnName]:result_df_add = pd.DataFrame(['YES'], columns=[columnName]);i=i+1
-                else:result_df_add = pd.DataFrame(['NO'], columns=[columnName]);x=x+1
+                if str(row[columnName]) == '0':result_df_add = pd.DataFrame([' '], columns=[columnName])
+                elif compare(row[columnName], columnValue.values[0]) == row[columnName]:result_df_add = pd.DataFrame([1], columns=[columnName]);i=i+1
+                else:result_df_add = pd.DataFrame([0], columns=[columnName]);x=x+1
                 result_df_column=result_df_column.append(result_df_add)
 
             #add correct/incorrect/total/correct percentage to the end of each column
