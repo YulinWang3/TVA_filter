@@ -19,7 +19,7 @@ def compare(platform, target):
         target_split = str(target).split(".")
         length = len(version_split)
         
-        if int(version_split[0]) > int(target_split[0]): return platform
+        if int(version_split[0]) > int(target_split[0]): return platformooo
         elif int(version_split[0]) < int(target_split[0]): return target 
         else: 
             if int(version_split[1]) > int(target_split[1]): return platform
@@ -74,6 +74,9 @@ while True:
                 result_df_column=result_df_column.append(result_df_add)
 
             #add correct/incorrect/total/correct percentage to the end of each column
+            result_df_column=result_df_column.append(pd.DataFrame([columnName], columns=[columnName]))
+            result_df_column=result_df_column.append(pd.DataFrame([' '], columns=[columnName]))
+            result_df_column=result_df_column.append(pd.DataFrame(['Expect >=', columnValue.values[0]], columns=[columnName]))
             result_df_column=result_df_column.append(pd.DataFrame(['Total = ', i+x], columns=[columnName]))
             result_df_column=result_df_column.append(pd.DataFrame(['Correct = ', i], columns=[columnName]))
             result_df_column=result_df_column.append(pd.DataFrame(['Incorrect = ', x], columns=[columnName]))
